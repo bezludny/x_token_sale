@@ -29,4 +29,34 @@ contract('DappToken', function(accounts) {
       assert.equal(adminBalance.toNumber(), 1000000, 'it allocates the initial supply to the admin account')
     });
   });
+
+  // --------------------
+
+  it('tranfers the token ownership', function(){
+    return DappToken.deployed().then(function(instance) {
+      tokenInstance = instance;
+
+      return tokenInstance.transfer.call(accounts[1], 9999999999);
+    }).then(assert.fail).catch(function(error) {
+      assert(error.message.indexOf('revert') >= 0, 'error message must contain revert');
+      return tokenInstance.transfer.call(accounts[1], 250000, { from: accounts[0] });
+    }).then(function(result) {
+      assert.equal(result, true, 'it returns true');
+      return tokenInstance.transfer(accounts[1], 250000, { from: accounts[0] })
+    }).then(function(receipt) {
+      assert.equal(receipt.logs.length, 1, 'triggers one event');
+      assert.equal(receipt.logs[0].event, 'Transfer', 'event is Transfer');
+      assert.equal(receipt.logs[0].args._from, accounts[0], 'logs the sender');
+      assert.equal(receipt.logs[0].args._to, accounts[1], 'logs the recipient');
+      assert.equal(receipt.logs[0].args._value, 250000, 'logs the tranfer amount');
+
+      return tokenInstance.balanceOf(accounts[1]);
+    }).then(function(balance) {
+      assert.equal(balance.toNumber(), 250000, 'adds the ammount to the receiving account');
+      return tokenInstance.balanceOf(accounts[0]);
+    }).then(function(balance) {
+      assert.equal(balance.toNumber(), 750000, 'deducts the ammount from the sender');
+      return tokenInstance.balanceOf(accounts[0]);
+    });
+  });
 });
