@@ -18,11 +18,12 @@
  *
  */
 
-// const HDWalletProvider = require('@truffle/hdwallet-provider');
+const HDWalletProvider = require('@truffle/hdwallet-provider');
 // const infuraKey = "fj4jll3k.....";
 //
 // const fs = require('fs');
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
+const mnemonic = "brief buyer bracket must inspire jazz cancel memory blush give ball bless rack face network"
 
 module.exports = {
   /**
@@ -41,6 +42,17 @@ module.exports = {
      port: 7545,            // Standard Ethereum port (default: none)
      network_id: "*",       // Any network (default: none)
     },
+
+    rinkeby: {
+     provider: function() {
+      return new HDWalletProvider(mnemonic, "https://rinkeby.infura.io/v3/a4969ff2682b442da7b209f31846433f");
+     },
+     network_id: 4,
+     gas: 4700000
+     // ,
+     // gasPrice: 10000000000,
+    }
+
     // Useful for testing. The `development` name is special - truffle uses it by default
     // if it's defined here and no other network is specified at the command line.
     // You should run a client (like ganache-cli, geth or parity) in a separate terminal

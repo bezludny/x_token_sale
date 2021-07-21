@@ -11,5 +11,8 @@
   },
   "scripts": {
     "dev": "lite-server"
+  },
+  "dependencies": {
+    "@truffle/hdwallet-provider": "^1.4.1"
   }
 }
